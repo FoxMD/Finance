@@ -1,8 +1,10 @@
 import os
 import csv
+import files
 
 class Filemanager:
     root_dir = "./database/"
+    encryption = files.Encryption()
 
     def listDirectory(self):
         file_set = set()
@@ -13,20 +15,12 @@ class Filemanager:
                 file_set.add(rel_file)
             return file_set
 
-    def saveFile(self, filename, df):
-        fnames = ['column1', 'column2', 'column3']
-        data = []
-
-        data1 = {'column1': 'data11', 'column2': 'data12', 'column3': 'data13'}
-        data2 = {'column1': 'data21', 'column2': 'data22', 'column3': 'data23'}
-        data.append(data1)
-        data.append(data2)
-
+    def saveFile(self, filename, header, df):
         with open(self.root_dir + filename, 'w', encoding="utf-8", newline="") as file:
-            writer = csv.DictWriter(file, fieldnames=fnames)
+            writer = csv.DictWriter(file, fieldnames=self.encryption.cryptHeader(header))
             writer.writeheader()
-            for line in data:
-                writer.writerow(line)
+            for line in df:
+                writer.writerow(self.encryption.cryptFile(line))
 
 
     def loadFile(self, filename):
