@@ -2,6 +2,7 @@ import os
 import csv
 import files
 
+
 class Filemanager:
     root_dir = "./database/"
     encryption = files.Encryption()
@@ -22,12 +23,11 @@ class Filemanager:
             for line in df:
                 writer.writerow(self.encryption.cryptFile(line))
 
-
     def loadFile(self, filename):
         data = []
         with open(self.root_dir + filename, 'r', encoding="utf-8", newline="") as file:
             df = csv.reader(file, delimiter=',', quotechar='|')
             for row in df:
-                data.append(row)
+                data.append(self.encryption.decryptFile(row))
 
         return data

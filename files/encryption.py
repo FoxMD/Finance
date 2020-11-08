@@ -1,35 +1,38 @@
 class Encryption:
-    intab = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
-    outtab ='NOPQRSTUVWXYZABCDEFGHIJKLMnopqrstuvwxyzabcdefghijklm'
+    inTab = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
+    outTab ='NOPQRSTUVWXYZABCDEFGHIJKLMnopqrstuvwxyzabcdefghijklm'
 
     def cryptHeader(self, header):
-        newheader = []
+        newHeader = []
         for item in header:
-            newitem = str(item).maketrans(self.intab, self.outtab)
-            newitem = item.translate(newitem)
-            newheader.append(newitem)
-        return newheader
+            newItem = str(item).maketrans(self.inTab, self.outTab)
+            newItem = item.translate(newItem)
+            newHeader.append(newItem)
+        return newHeader
 
     def cryptFile(self, line):
         keys = line.keys()
         items = line.values()
-        newkeys = []
-        newitems = []
+        newKeys = []
+        newItems = []
         for key in keys:
-            newkey = str(key).maketrans(self.intab, self.outtab)
-            newkey = key.translate(newkey)
-            newkeys.append(newkey)
+            newKey = str(key).maketrans(self.inTab, self.outTab)
+            newKey = key.translate(newKey)
+            newKeys.append(newKey)
 
         for item in items:
-            newitem = str(item).maketrans(self.intab, self.outtab)
-            newitem = item.translate(newitem)
-            newitems.append(newitem)
+            newItem = str(item).maketrans(self.inTab, self.outTab)
+            newItem = item.translate(newItem)
+            newItems.append(newItem)
 
-        cline = dict(zip(newkeys, newitems))
+        cline = dict(zip(newKeys, newItems))
         print(cline)
         return cline
 
     def decryptFile(self, cline):
-        trantab = cline.maketrans(self.outtab, self.intab)
-        dline = cline.translate(trantab)
-        return dline
+        dLine = []
+        for item in cline:
+            newItem = str(item).maketrans(self.outTab, self.inTab)
+            newItem = item.translate(newItem)
+            dLine.append(newItem)
+        return dLine
