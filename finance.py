@@ -16,6 +16,22 @@ window.show()
 fm = files.Filemanager()
 encryption = files.Encryption()
 
+
+def on_button_click():
+    print('Clicked')
+    fm.updateFolderContent()
+    content = fm.getFolderContent()
+    for item in content:
+        file = str(item).split('_')
+        file[2] = file[2].rstrip('.csv')
+        ui_window.tableWidget.insertRow(ui_window.tableWidget.rowCount())
+        ui_window.tableWidget.setItem(ui_window.tableWidget.rowCount() - 1, 0, QtWidgets.QTableWidgetItem(str(file[1])))
+        ui_window.tableWidget.setItem(ui_window.tableWidget.rowCount() - 1, 1, QtWidgets.QTableWidgetItem(str(file[2])))
+
+
+ui_window.pushButton.clicked.connect(on_button_click)
+
+
 data = []
 fnames = ['column1', 'column2', 'column3']
 

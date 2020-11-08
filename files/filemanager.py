@@ -17,7 +17,8 @@ class Filemanager:
             for file_name in files:
                 rel_dir = os.path.relpath(dir_, self.root_dir)
                 rel_file = os.path.join(file_name)
-                file_set.add(rel_file)
+                if rel_file.endswith('.csv'):
+                    file_set.add(rel_file)
             return file_set
 
     def saveFile(self, filename, header, df):
