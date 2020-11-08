@@ -6,6 +6,10 @@ import files
 class Filemanager:
     root_dir = "./database/"
     encryption = files.Encryption()
+    directory_content = ()
+
+    def __init__(self):
+        self.directory_content = self.listDirectory()
 
     def listDirectory(self):
         file_set = set()
@@ -29,5 +33,10 @@ class Filemanager:
             df = csv.reader(file, delimiter=',', quotechar='|')
             for row in df:
                 data.append(self.encryption.decryptFile(row))
-
         return data
+
+    def getFolderContent(self):
+        return self.directory_content
+
+    def updateFolderContent(self):
+        self.directory_content = self.listDirectory()
