@@ -13,28 +13,32 @@ class MainWindow(QtWidgets.QMainWindow):
         self.fm = filemanager.Filemanager()
 
         self.updateEntries()
+        self.setDropDownItems()
 
-        self.ui.pushButton.clicked.connect(self.on_button_update)
-        self.ui.pushButton_3.clicked.connect(self.on_button_load)
-        self.ui.pushButton_2.clicked.connect(self.on_button_new)
-        self.ui.pushButton_4.clicked.connect(self.on_button_add)
+        self.ui.pushButton.clicked.connect(self.onButtonUpdate)
+        self.ui.pushButton_3.clicked.connect(self.onButtonLoad)
+        self.ui.pushButton_2.clicked.connect(self.onButtonNew)
+        self.ui.pushButton_4.clicked.connect(self.onButtonAdd)
 
-    def on_button_update(self):
+    def onButtonUpdate(self):
         self.updateEntries()
 
     def updateEntries(self):
-        self.ui.tableWidget.setRowCount(0)
-        self.ui.tableWidget.clearContents()
+        activeUI = self.ui.tableWidget
+        castQT = QtWidgets.QTableWidgetItem
+
+        activeUI.setRowCount(0)
+        activeUI.clearContents()
         self.fm.updateFolderContent()
         content = self.fm.getFolderContent()
         for item in content:
             file = str(item).split('_')
             file[2] = file[2].rstrip('.csv')
-            self.ui.tableWidget.insertRow(self.ui.tableWidget.rowCount())
-            self.ui.tableWidget.setItem(self.ui.tableWidget.rowCount() - 1, 0, QtWidgets.QTableWidgetItem(str(file[1])))
-            self.ui.tableWidget.setItem(self.ui.tableWidget.rowCount() - 1, 1, QtWidgets.QTableWidgetItem(str(file[2])))
+            activeUI.insertRow(activeUI.rowCount())
+            activeUI.setItem(activeUI.rowCount() - 1, 0, castQT(str(file[1])))
+            activeUI.setItem(activeUI.rowCount() - 1, 1, castQT(str(file[2])))
 
-    def get_filename(self):
+    def getFilename(self):
         currentRow = self.ui.tableWidget.currentItem()
         if currentRow is not None:
             row = currentRow.row()
@@ -52,15 +56,43 @@ class MainWindow(QtWidgets.QMainWindow):
             file = "None"
         return file
 
-    def on_button_load(self):
-        file = self.get_filename()
+    def fillWindow(self, data):
+        activeUI = self.ui.tableWidget_2
+        activeUI.insertRow(self.ui.tableWidget_2.rowCount())
+        for i in range(0, 5):
+            activeUI.setItem(activeUI.rowCount() - 1, i, QtWidgets.QTableWidgetItem(str(data[i])))
+
+    def onButtonLoad(self):
+        file = self.getFilename()
         if file is not "None":
+            self.ui.tableWidget_2.setRowCount(0)
+            self.ui.tableWidget_2.clearContents()
             data = self.fm.loadFile(file)
             for row in data:
-                print(row)
+                if 'Price EUR' not in row:  # TODO: find a better solution
+                    self.fillWindow(row)
 
-    def on_button_new(self):
+    def onButtonNew(self):
         print("new clicked")
+        self.ui.tableWidget.insertRow(self.ui.tableWidget.rowCount())
+        self.ui.tableWidget_2.setRowCount(0)
+        self.ui.tableWidget_2.clearContents()
 
-    def on_button_add(self):
+    def onButtonAdd(self):
         print("add clicked")
+        activeUI = self.ui.tableWidget_2
+        castQT = QtWidgets.QTableWidgetItem
+
+        activeUI.insertRow(activeUI.rowCount())
+        data = [self.ui.comboBox.currentText(), self.ui.lineEdit.text(), self.ui.lineEdit_2.text(),
+                self.ui.lineEdit_3.text(), self.ui.dateEdit.text()]
+
+        print(data)
+        for i in range(0, 5):
+            activeUI.setItem(activeUI.rowCount() - 1, i, castQT(str(data[i])))
+
+    def setDropDownItems(self):
+        items = self.fm.loadItems()
+        for item in items:
+            self.ui.comboBox.addItem(item)
+

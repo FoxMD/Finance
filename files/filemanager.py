@@ -41,3 +41,10 @@ class Filemanager:
 
     def updateFolderContent(self):
         self.directory_content = self.listDirectory()
+
+    def loadItems(self):
+        with open(self.root_dir + 'items.dat', 'r', encoding="utf-8", newline="") as file:
+            line = file.readline()
+        items = line.split(',')
+        return items
+

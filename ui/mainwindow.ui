@@ -14,7 +14,7 @@
    <string>Finance</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QPushButton" name="pushButton">
+   <widget class="QPushButton" name="refreshButton">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -47,7 +47,7 @@
      </property>
     </column>
    </widget>
-   <widget class="QPushButton" name="pushButton_2">
+   <widget class="QPushButton" name="newButton">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -60,7 +60,7 @@
      <string>New</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_3">
+   <widget class="QPushButton" name="loadButton">
     <property name="geometry">
      <rect>
       <x>140</x>
@@ -108,7 +108,7 @@
      </property>
     </column>
    </widget>
-   <widget class="QPushButton" name="pushButton_4">
+   <widget class="QPushButton" name="addButton">
     <property name="geometry">
      <rect>
       <x>770</x>
@@ -121,7 +121,7 @@
      <string>Add</string>
     </property>
    </widget>
-   <widget class="QComboBox" name="comboBox">
+   <widget class="QComboBox" name="itemBox">
     <property name="geometry">
      <rect>
       <x>270</x>
@@ -131,7 +131,7 @@
      </rect>
     </property>
    </widget>
-   <widget class="QLineEdit" name="lineEdit">
+   <widget class="QLineEdit" name="commentField">
     <property name="geometry">
      <rect>
       <x>370</x>
@@ -141,7 +141,7 @@
      </rect>
     </property>
    </widget>
-   <widget class="QLineEdit" name="lineEdit_2">
+   <widget class="QLineEdit" name="priceFieldEUR">
     <property name="geometry">
      <rect>
       <x>490</x>
@@ -151,7 +151,7 @@
      </rect>
     </property>
    </widget>
-   <widget class="QLineEdit" name="lineEdit_3">
+   <widget class="QLineEdit" name="priceFieldCZK">
     <property name="geometry">
      <rect>
       <x>570</x>
