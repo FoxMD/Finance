@@ -15,10 +15,11 @@ class MainWindow(QtWidgets.QMainWindow):
         self.updateEntries()
         self.setDropDownItems()
 
-        self.ui.pushButton.clicked.connect(self.onButtonUpdate)
-        self.ui.pushButton_3.clicked.connect(self.onButtonLoad)
-        self.ui.pushButton_2.clicked.connect(self.onButtonNew)
-        self.ui.pushButton_4.clicked.connect(self.onButtonAdd)
+        self.ui.refreshButton.clicked.connect(self.onButtonUpdate)
+        self.ui.loadButton.clicked.connect(self.onButtonLoad)
+        self.ui.newButton.clicked.connect(self.onButtonNew)
+        self.ui.addButton.clicked.connect(self.onButtonAdd)
+        self.ui.saveButton.clicked.connect(self.onButtonSave)
 
     def onButtonUpdate(self):
         self.updateEntries()
@@ -73,19 +74,17 @@ class MainWindow(QtWidgets.QMainWindow):
                     self.fillWindow(row)
 
     def onButtonNew(self):
-        print("new clicked")
         self.ui.tableWidget.insertRow(self.ui.tableWidget.rowCount())
         self.ui.tableWidget_2.setRowCount(0)
         self.ui.tableWidget_2.clearContents()
 
     def onButtonAdd(self):
-        print("add clicked")
         activeUI = self.ui.tableWidget_2
         castQT = QtWidgets.QTableWidgetItem
 
         activeUI.insertRow(activeUI.rowCount())
-        data = [self.ui.comboBox.currentText(), self.ui.lineEdit.text(), self.ui.lineEdit_2.text(),
-                self.ui.lineEdit_3.text(), self.ui.dateEdit.text()]
+        data = [self.ui.itemBox.currentText(), self.ui.commentField.text(), self.ui.priceFieldEUR.text(),
+                self.ui.priceFieldCZK.text(), self.ui.dateEdit.text()]
 
         print(data)
         for i in range(0, 5):
@@ -94,5 +93,18 @@ class MainWindow(QtWidgets.QMainWindow):
     def setDropDownItems(self):
         items = self.fm.loadItems()
         for item in items:
-            self.ui.comboBox.addItem(item)
+            self.ui.itemBox.addItem(item)
 
+    def onButtonSave(self):
+        activeUI = self.ui.tableWidget_2
+        file = self.getFilename()
+        data = []
+        fnames = ['Item', 'Comment', 'Price EUR', 'Price CZK', 'Date']
+        for i in range(0, activeUI.rowCount()):
+            data_row = {'Item': activeUI.item(i, 0).text(),
+                        'Comment': activeUI.item(i, 1).text(),
+                        'Price EUR': activeUI.item(i, 2).text(),
+                        'Price CZK': activeUI.item(i, 3).text(),
+                        'Date': activeUI.item(i, 4).text()}
+            data.append(data_row)
+        self.fm.saveFile(file, fnames, data)
