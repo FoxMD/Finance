@@ -1,6 +1,7 @@
 from qtpy import QtWidgets
 from ui.mainwindow import Ui_MainWindow
 from files import filemanager
+from files import model
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -14,12 +15,14 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.updateEntries()
         self.setDropDownItems()
+        self.dm = model.DataModel(self.fm.getFolderContent(), self.fm.loadItems())
 
         self.ui.refreshButton.clicked.connect(self.onButtonUpdate)
         self.ui.loadButton.clicked.connect(self.onButtonLoad)
         self.ui.newButton.clicked.connect(self.onButtonNew)
         self.ui.addButton.clicked.connect(self.onButtonAdd)
         self.ui.saveButton.clicked.connect(self.onButtonSave)
+        self.dm.testCreator()
 
     def onButtonUpdate(self):
         self.updateEntries()
@@ -47,9 +50,9 @@ class MainWindow(QtWidgets.QMainWindow):
 
             if col == 1:
                 filename = self.ui.tableWidget.item(row, col).text()
-                year = self.ui.tableWidget.item(row, col-1).text()
+                year = self.ui.tableWidget.item(row, col - 1).text()
             else:
-                filename = self.ui.tableWidget.item(row, col+1).text()
+                filename = self.ui.tableWidget.item(row, col + 1).text()
                 year = self.ui.tableWidget.item(row, col).text()
 
             file = "_" + year + "_" + filename + ".csv"
@@ -65,10 +68,12 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def onButtonLoad(self):
         file = self.getFilename()
+        self.dm.setActiveEntry(file)
         if file is not "None":
             self.ui.tableWidget_2.setRowCount(0)
             self.ui.tableWidget_2.clearContents()
             data = self.fm.loadFile(file)
+            self.dm.setData(data)
             for row in data:
                 if 'Price EUR' not in row:  # TODO: find a better solution
                     self.fillWindow(row)
