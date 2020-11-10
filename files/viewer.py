@@ -23,6 +23,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.addButton.clicked.connect(self.onButtonAdd)
         self.ui.saveButton.clicked.connect(self.onButtonSave)
         self.ui.showSummaryBtn.clicked.connect(self.onButtonShowSummary)
+        self.ui.showGraphBtn.clicked.connect(self.onButtonShowGraph)
+        self.ui.printSummaryBtn.clicked.connect(self.onButtonPrint)
         self.dm.testCreator()
 
     def onButtonUpdate(self):
@@ -117,4 +119,9 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def onButtonShowSummary(self):
         print('clicked show summary')
-        self.dm.showSummary()
+
+    def onButtonShowGraph(self):
+        self.dm.showGraph()
+
+    def onButtonPrint(self):
+        self.dm.printSummary()
