@@ -26,7 +26,6 @@ class Encryption:
             newItems.append(newItem)
 
         cline = dict(zip(newKeys, newItems))
-        print(cline)
         return cline
 
     def decryptFile(self, cline):

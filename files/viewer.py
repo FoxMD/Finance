@@ -94,7 +94,6 @@ class MainWindow(QtWidgets.QMainWindow):
         data = [self.ui.itemBox.currentText(), self.ui.commentField.text(), self.ui.priceFieldEUR.text(),
                 self.ui.priceFieldCZK.text(), self.ui.dateEdit.text()]
 
-        print(data)
         for i in range(0, 5):
             activeUI.setItem(activeUI.rowCount() - 1, i, castQT(str(data[i])))
 
@@ -121,6 +120,10 @@ class MainWindow(QtWidgets.QMainWindow):
         print('clicked show summary')
 
     def onButtonShowGraph(self):
+        file = self.getFilename()
+        data = self.fm.loadFile(file)
+        print(data)
+        self.dm.setData(data)
         self.dm.showGraph()
 
     def onButtonPrint(self):

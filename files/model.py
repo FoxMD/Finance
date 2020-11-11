@@ -17,12 +17,15 @@ class DataModel(object):
         self.pieData = {}
 
         self.incomeText = 'Prijem'
+        self.savings = 0.0
 
     def plotPie(self, dataIn):
+        print(self.pieData)
         self.pieData = {key: val for key, val in dataIn.items() if val != 0.0}
         if self.incomeText in self.pieData:
-            self.pieData[self.incomeText] = self.pieData[self.incomeText] - self.outcome
+            self.pieData[self.incomeText] = self.savings
 
+        self.pieData['Uspora'] = self.pieData.pop('Prijem')
         _fig, ax = plt.subplots(figsize=(10, 4), subplot_kw=dict(aspect="equal"))
         data = list(self.pieData.values())
         keys = list(self.pieData.keys())
@@ -53,6 +56,7 @@ class DataModel(object):
         self.activeEntry = entry
 
     def showGraph(self):
+        print('showGraph')
         inputData = self.preprocessDataForPie()
         graph = self.plotPie(inputData)
         graph.show()
@@ -74,17 +78,25 @@ class DataModel(object):
 
     def preprocessDataForPie(self):
         inputData = {}
+        self.savings = 0.0
         for item in self.items:
             inputData[item] = 0.0
         for item in self.data:
             if 'Price EUR' not in item:
                 try:
                     inputData[item[0]] += float(item[2])
+                    print(inputData[item[0]])
                 except KeyError:
                     print('key not found')
         for key in inputData.keys():
             if self.incomeText not in key:
                 self.outcome += inputData[key]
+        for item in self.data:
+            if self.incomeText in item:
+                print("naslo")
+                self.savings += float(item[2])
+                print(self.savings)
+        print(self.savings)
         return inputData
 
     def showSummary(self):
