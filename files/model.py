@@ -89,11 +89,9 @@ class DataModel(object):
 
         document = Document()
         document.add_heading(file[2].upper() + ' ' + file[1], 0)
-        #document.add_heading('Summary:', level=1)
+
         document.add_picture(memfile, width=Inches(7.75))
-        # p.add_run('bold').bold = True
-        # p.add_run(' and some ')
-        # p.add_run('italic.').italic = True
+
         document.add_paragraph('Income', style='Intense Quote')
 
         records = (
@@ -104,13 +102,6 @@ class DataModel(object):
 
         document.add_paragraph('Expenses', style='Intense Quote')
 
-        #document.add_paragraph(
-        #    'first item in unordered list', style='List Bullet'
-        #)
-        #document.add_paragraph(
-        #    'first item in ordered list', style='List Number'
-        #)
-        #  p = document.add_paragraph('Summary for the month')
         records = ()
         for key in inputData.keys():
             if self.incomeText not in key:
@@ -125,7 +116,6 @@ class DataModel(object):
         documentName = './reports/'+file[1]+'_'+file[2]+'.docx'
         document.save(documentName)
         memfile.close()
-        pass
 
     def preprocessDataForPie(self):
         inputData = {}
