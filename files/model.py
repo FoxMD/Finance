@@ -20,7 +20,7 @@ class DataModel(object):
         self.savings = 0.0
 
     def plotPie(self, dataIn):
-        print(self.pieData)
+        # print(self.pieData)
         self.pieData = {key: val for key, val in dataIn.items() if val != 0.0}
         if self.incomeText in self.pieData:
             self.pieData[self.incomeText] = self.savings
@@ -64,7 +64,23 @@ class DataModel(object):
     def calcCZK(self, eur):
         return eur * 26.58 
 
+    def addTable(self, data, document):
+        table = document.add_table(rows=1, cols=4)
+        hdr_cells = table.rows[0].cells
+        hdr_cells[0].text = 'Date'
+        hdr_cells[1].text = 'Value EUR'
+        hdr_cells[2].text = 'Value CZK'
+        hdr_cells[3].text = 'Description'
+        for date, valueEU, valueCZ, desc in data:
+            row_cells = table.add_row().cells
+            row_cells[0].text = date
+            row_cells[1].text = '{:.2f}'.format(valueEU) + ' EUR'
+            row_cells[2].text = '{:.2f}'.format(valueCZ) + ' CZK'
+            row_cells[3].text = desc
+
     def printSummary(self):
+        file = str(self.activeEntry).split('_')
+        file[2] = file[2].rstrip('.csv')
         plt.clf()
         memfile = BytesIO()
         inputData = self.preprocessDataForPie()
@@ -72,34 +88,19 @@ class DataModel(object):
         figure.savefig(memfile)
 
         document = Document()
-        document.add_heading('Report', 0) # TODO: Change to month + year
-        p = document.add_paragraph('Summary for the month')
-        
+        document.add_heading(file[2].upper() + ' ' + file[1], 0)
+        #document.add_heading('Summary:', level=1)
         document.add_picture(memfile, width=Inches(7.75))
         # p.add_run('bold').bold = True
         # p.add_run(' and some ')
         # p.add_run('italic.').italic = True
-        document.add_heading('Table summary:', level=1)
         document.add_paragraph('Income', style='Intense Quote')
 
         records = (
-            ('2/5/2020', 2258, self.calcCZK(2258), 'Vyplata'),
-            ('2/17/2020', 286, self.calcCZK(286), 'Elis'),
-            ('2/31/2020', 50, self.calcCZK(50), 'Dalsi')
+            ('5/2020', inputData['Prijem'], self.calcCZK(inputData['Prijem']), 'Celkovy prijem'),
         )
-
-        table = document.add_table(rows=1, cols=4)
-        hdr_cells = table.rows[0].cells
-        hdr_cells[0].text = 'Date'
-        hdr_cells[1].text = 'Value EUR'
-        hdr_cells[2].text = 'Value CZK'
-        hdr_cells[3].text = 'Description'
-        for date, valueEU, valueCZ, desc in records:
-            row_cells = table.add_row().cells
-            row_cells[0].text = date
-            row_cells[1].text = '{:.2f}'.format(valueEU) + ' EUR'
-            row_cells[2].text = '{:.2f}'.format(valueCZ) + ' CZK'
-            row_cells[3].text = desc
+        self.addTable(records, document)
+        print(inputData)
 
         document.add_paragraph('Expenses', style='Intense Quote')
 
@@ -109,25 +110,20 @@ class DataModel(object):
         #document.add_paragraph(
         #    'first item in ordered list', style='List Number'
         #)
+        #  p = document.add_paragraph('Summary for the month')
+        records = ()
+        for key in inputData.keys():
+            if self.incomeText not in key:
+                if inputData[key] != 0.0:
+                    record = ('5/2020', inputData[key], self.calcCZK(inputData[key]), key)
+                    records = records + (record,)
 
-        records = (
-            (3, '101', 'Spam'),
-            (7, '422', 'Eggs'),
-            (4, '631', 'Spam, spam, eggs, and spam')
-        )
+        self.addTable(records, document)
+        document.add_page_break()
+        document.add_heading('Details:', level=1)
 
-        table = document.add_table(rows=1, cols=3)
-        hdr_cells = table.rows[0].cells
-        hdr_cells[0].text = 'Qty'
-        hdr_cells[1].text = 'Id'
-        hdr_cells[2].text = 'Desc'
-        for qty, id, desc in records:
-            row_cells = table.add_row().cells
-            row_cells[0].text = str(qty)
-            row_cells[1].text = id
-            row_cells[2].text = desc
-
-        document.save('./reports/report.docx')
+        documentName = './reports/'+file[1]+'_'+file[2]+'.docx'
+        document.save(documentName)
         memfile.close()
         pass
 
@@ -140,7 +136,6 @@ class DataModel(object):
             if 'Price EUR' not in item:
                 try:
                     inputData[item[0]] += float(item[2])
-                    print(inputData[item[0]])
                 except KeyError:
                     print('key not found')
         for key in inputData.keys():
@@ -150,8 +145,6 @@ class DataModel(object):
             if self.incomeText in item:
                 print("naslo")
                 self.savings += float(item[2])
-                print(self.savings)
-        print(self.savings)
         return inputData
 
     def showSummary(self):
