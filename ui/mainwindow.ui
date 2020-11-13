@@ -268,7 +268,7 @@
      <string>Remove entry</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="showStatisticsButton">
+   <widget class="QPushButton" name="saveStatisticsButton">
     <property name="geometry">
      <rect>
       <x>850</x>
@@ -278,7 +278,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Show statistics</string>
+     <string>Save statistics</string>
     </property>
    </widget>
   </widget>

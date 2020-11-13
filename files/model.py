@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from io import BytesIO
 from docx import Document
 from docx.shared import Inches
-
+import xlsxwriter
 
 class DataModel(object):
     def __init__(self, e, i):
@@ -110,8 +110,6 @@ class DataModel(object):
                     records = records + (record,)
 
         self.addTable(records, document)
-        document.add_page_break()
-        document.add_heading('Details:', level=1)
 
         documentName = './reports/'+file[1]+'_'+file[2]+'.docx'
         document.save(documentName)
@@ -139,6 +137,35 @@ class DataModel(object):
 
     def showSummary(self):
         pass
+
+    def saveDataSummary(self):
+        # file[1] + '_' + file[2] + '.docx'
+        workbook = xlsxwriter.Workbook('./reports/'+'Expenses01.xlsx')
+        worksheet = workbook.add_worksheet()
+
+        # Some data we want to write to the worksheet.
+        expenses = (
+            ['Rent', 1000],
+            ['Gas', 100],
+            ['Food', 300],
+            ['Gym', 50],
+        )
+
+        # Start from the first cell. Rows and columns are zero indexed.
+        row = 0
+        col = 0
+
+        # Iterate over the data and write it out row by row.
+        for item, cost in expenses:
+            worksheet.write(row, col, item)
+            worksheet.write(row, col + 1, cost)
+            row += 1
+
+        # Write a total using a formula.
+        worksheet.write(row, 0, 'Total')
+        worksheet.write(row, 1, '=SUM(B1:B4)')
+
+        workbook.close()
 
     def webMonth(self):
         pass
