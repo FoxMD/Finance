@@ -25,6 +25,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.saveStatisticsButton.clicked.connect(self.onButtonSaveSummary)
         self.ui.showGraphBtn.clicked.connect(self.onButtonShowGraph)
         self.ui.printSummaryBtn.clicked.connect(self.onButtonPrint)
+        self.ui.showSummaryBtn.clicked.connect(self.onButtonShowSummary)
         self.dm.testCreator()
 
     def onButtonUpdate(self):
@@ -117,8 +118,12 @@ class MainWindow(QtWidgets.QMainWindow):
         self.fm.saveFile(file, fnames, data)
 
     def onButtonSaveSummary(self):
-        print('clicked show summary')
+        print('clicked save summary')
         self.dm.saveDataSummary()
+
+    def onButtonShowSummary(self):
+        print('clicked show summary')
+        self.dm.readDataSummary()
 
     def onButtonShowGraph(self):
         file = self.getFilename()

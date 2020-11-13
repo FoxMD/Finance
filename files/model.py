@@ -5,6 +5,7 @@ from io import BytesIO
 from docx import Document
 from docx.shared import Inches
 import xlsxwriter
+import xlrd
 
 class DataModel(object):
     def __init__(self, e, i):
@@ -138,11 +139,29 @@ class DataModel(object):
     def showSummary(self):
         pass
 
+    def readDataSummary(self):
+        workbook = xlrd.open_workbook('./reports/'+'Summary.xlsx')
+        sheets = workbook.sheet_names()
+        print(sheets)
+        pass
+
     def saveDataSummary(self):
         # file[1] + '_' + file[2] + '.docx'
-        workbook = xlsxwriter.Workbook('./reports/'+'Expenses01.xlsx')
-        worksheet = workbook.add_worksheet()
+        workbook_rd = xlrd.open_workbook('./reports/' + 'Expenses01.xlsx')
+        sheets = workbook_rd.sheets()
 
+        workbook = xlsxwriter.Workbook('./reports/'+'Expenses01.xlsx')
+
+        for sheet in sheets:
+            newSheet = workbook.add_worksheet(sheet.name)
+            for row in range(sheet.nrows):
+                for col in range(sheet.ncols):
+                    newSheet.write(row, col, sheet.cell(row, col).value)
+        
+        for row in range(10, 20):  # write NEW data
+            for col in range(20):
+                newSheet.write(row, col, "test ({}, {})".format(row, col))
+        '''
         # Some data we want to write to the worksheet.
         expenses = (
             ['Rent', 1000],
@@ -164,8 +183,9 @@ class DataModel(object):
         # Write a total using a formula.
         worksheet.write(row, 0, 'Total')
         worksheet.write(row, 1, '=SUM(B1:B4)')
-
+        '''
         workbook.close()
+        print('statistic saved')
 
     def webMonth(self):
         pass
