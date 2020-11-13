@@ -6,6 +6,7 @@ from docx import Document
 from docx.shared import Inches
 import xlsxwriter
 import xlrd
+import os
 
 class DataModel(object):
     def __init__(self, e, i):
@@ -20,9 +21,9 @@ class DataModel(object):
         self.incomeText = 'Prijem'
         self.savings = 0.0
 
-    def plotPie(self, dataIn):
+    def plotPie(self, datain):
         # print(self.pieData)
-        self.pieData = {key: val for key, val in dataIn.items() if val != 0.0}
+        self.pieData = {key: val for key, val in datain.items() if val != 0.0}
         if self.incomeText in self.pieData:
             self.pieData[self.incomeText] = self.savings
 
@@ -140,10 +141,8 @@ class DataModel(object):
         pass
 
     def readDataSummary(self):
-        workbook = xlrd.open_workbook('./reports/'+'Summary.xlsx')
-        sheets = workbook.sheet_names()
-        print(sheets)
-        pass
+        filePath = os.path.abspath(os.getcwd())
+        os.system(filePath+'/reports/'+'Summary.xlsx')
 
     def saveDataSummary(self):
         # file[1] + '_' + file[2] + '.docx'
