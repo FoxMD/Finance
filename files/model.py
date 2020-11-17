@@ -156,7 +156,10 @@ class DataModel(object):
             for row in range(sheet.nrows):
                 for col in range(sheet.ncols):
                     newSheet.write(row, col, sheet.cell(row, col).value)
-        
+
+        for col in self.items:
+            newSheet.write(9, self.items.index(col), "test ({})".format(col))
+
         for row in range(10, 20):  # write NEW data
             for col in range(20):
                 newSheet.write(row, col, "test ({}, {})".format(row, col))
