@@ -146,6 +146,7 @@ class DataModel(object):
 
     def saveDataSummary(self):
         # file[1] + '_' + file[2] + '.docx'
+        print(self.data)
         workbook_rd = xlrd.open_workbook('./reports/' + 'Expenses01.xlsx')
         sheets = workbook_rd.sheets()
 
@@ -158,10 +159,10 @@ class DataModel(object):
                     newSheet.write(row, col, sheet.cell(row, col).value)
 
         for col in self.items:
-            newSheet.write(9, self.items.index(col), "test ({})".format(col))
+            newSheet.write(9, self.items.index(col)*2, "{}".format(col))
 
         for row in range(10, 20):  # write NEW data
-            for col in range(20):
+            for col in range(len(self.items)*2):
                 newSheet.write(row, col, "test ({}, {})".format(row, col))
         '''
         # Some data we want to write to the worksheet.
