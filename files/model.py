@@ -8,6 +8,7 @@ import xlsxwriter
 import xlrd
 import os
 
+
 class DataModel(object):
     def __init__(self, e, i):
         self.entries = e
@@ -64,7 +65,7 @@ class DataModel(object):
         graph.show()
 
     def calcCZK(self, eur):
-        return eur * 26.58 
+        return eur * 26.58
 
     def addTable(self, data, document):
         table = document.add_table(rows=1, cols=4)
@@ -113,7 +114,7 @@ class DataModel(object):
 
         self.addTable(records, document)
 
-        documentName = './reports/'+file[1]+'_'+file[2]+'.docx'
+        documentName = './reports/' + file[1] + '_' + file[2] + '.docx'
         document.save(documentName)
         memfile.close()
 
@@ -142,39 +143,15 @@ class DataModel(object):
 
     def readDataSummary(self):
         filePath = os.path.abspath(os.getcwd())
-        os.system(filePath+'/reports/'+'Summary.xlsx')
+        os.system(filePath + '/reports/' + 'Summary.xlsx')
 
-    def saveDataSummary(self):
-        # file[1] + '_' + file[2] + '.docx'
-        '''
-        print(self.data)
-        workbook_rd = xlrd.open_workbook('./reports/' + 'Expenses01.xlsx')
-        sheets = workbook_rd.sheets()
-
-        workbook = xlsxwriter.Workbook('./reports/'+'Expenses01.xlsx')
-
-        for sheet in sheets:
-            newSheet = workbook.add_worksheet(sheet.name)
-            for row in range(sheet.nrows):
-                for col in range(sheet.ncols):
-                    newSheet.write(row, col, sheet.cell(row, col).value)
-
-        for col in self.items:
-            newSheet.write(9, self.items.index(col)*2, "{}".format(col))
-        
-        for row in range(10, 20):  # write NEW data
-            for col in range(len(self.items)*2):
-                newSheet.write(row, col, "test ({}, {})".format(row, col))
-        
-        workbook.close()
-'''
-        headers = ['Nafta/Benzin','Byt','Jidlo','Automat','Hazard','Sport','Obleceni','Elektronika','Zahradka','Auto','Zabava','Lekarna','Prijem','Ostatni']
+    def getDictionary(self, header):
         placeholder = []
 
-        for item in headers:
+        for item in header:  # TODO: find better way
             placeholder.append([])
 
-        dictionary = dict(zip(headers,placeholder))
+        dictionary = dict(zip(header, placeholder))
 
         for col in self.data:
             if col[0] in dictionary.keys():
@@ -194,32 +171,17 @@ class DataModel(object):
             while len(dictionary[item]) < max_length:
                 dictionary[item].append(float(0.0))
 
-        df = pd.DataFrame(data=dictionary)
+        return pd.DataFrame(data=dictionary)
+
+    def saveDataSummary(self):
+        headers = ['Nafta/Benzin', 'Byt', 'Jidlo', 'Automat', 'Hazard', 'Sport', 'Obleceni', 'Elektronika', 'Zahradka',
+                   'Auto', 'Zabava', 'Lekarna', 'Prijem', 'Ostatni']
+
+        df = self.getDictionary(header=headers)
+
         with pd.ExcelWriter("./reports/Expenses01.xlsx", engine="openpyxl", mode="a") as writer:
-            df.to_excel(writer, startrow=0, startcol=0, sheet_name='january_5')        
-        '''
-        # Some data we want to write to the worksheet.
-        expenses = (
-            ['Rent', 1000],
-            ['Gas', 100],
-            ['Food', 300],
-            ['Gym', 50],
-        )
+            df.to_excel(writer, startrow=0, startcol=0, sheet_name=self.activeEntry.rstrip('.csv').lstrip('_'))
 
-        # Start from the first cell. Rows and columns are zero indexed.
-        row = 0
-        col = 0
-
-        # Iterate over the data and write it out row by row.
-        for item, cost in expenses:
-            worksheet.write(row, col, item)
-            worksheet.write(row, col + 1, cost)
-            row += 1
-
-        # Write a total using a formula.
-        worksheet.write(row, 0, 'Total')
-        worksheet.write(row, 1, '=SUM(B1:B4)')
-        '''
         print('statistic saved')
 
     def webMonth(self):
