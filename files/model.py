@@ -146,6 +146,7 @@ class DataModel(object):
 
     def saveDataSummary(self):
         # file[1] + '_' + file[2] + '.docx'
+        '''
         print(self.data)
         workbook_rd = xlrd.open_workbook('./reports/' + 'Expenses01.xlsx')
         sheets = workbook_rd.sheets()
@@ -160,10 +161,42 @@ class DataModel(object):
 
         for col in self.items:
             newSheet.write(9, self.items.index(col)*2, "{}".format(col))
-
+        
         for row in range(10, 20):  # write NEW data
             for col in range(len(self.items)*2):
                 newSheet.write(row, col, "test ({}, {})".format(row, col))
+        
+        workbook.close()
+'''
+        headers = ['Nafta/Benzin','Byt','Jidlo','Automat','Hazard','Sport','Obleceni','Elektronika','Zahradka','Auto','Zabava','Lekarna','Prijem','Ostatni']
+        placeholder = []
+
+        for item in headers:
+            placeholder.append([])
+
+        dictionary = dict(zip(headers,placeholder))
+
+        for col in self.data:
+            if col[0] in dictionary.keys():
+                dictionary[col[0]].append(float(col[2]))
+
+        for item in dictionary:
+            if not dictionary[item]:
+                dictionary[item].append(float(0.0))
+
+        max_length = 0
+        for item in dictionary:
+            size = len(dictionary[item])
+            if size > max_length:
+                max_length = size
+
+        for item in dictionary:
+            while len(dictionary[item]) < max_length:
+                dictionary[item].append(float(0.0))
+
+        df = pd.DataFrame(data=dictionary)
+        with pd.ExcelWriter("./reports/Expenses01.xlsx", engine="openpyxl", mode="a") as writer:
+            df.to_excel(writer, startrow=0, startcol=0, sheet_name='january_5')        
         '''
         # Some data we want to write to the worksheet.
         expenses = (
@@ -187,7 +220,6 @@ class DataModel(object):
         worksheet.write(row, 0, 'Total')
         worksheet.write(row, 1, '=SUM(B1:B4)')
         '''
-        workbook.close()
         print('statistic saved')
 
     def webMonth(self):
