@@ -4,8 +4,6 @@ import matplotlib.pyplot as plt
 from io import BytesIO
 from docx import Document
 from docx.shared import Inches
-import xlsxwriter
-import xlrd
 import os
 
 
@@ -22,11 +20,16 @@ class DataModel(object):
         self.incomeText = 'Prijem'
         self.savings = 0.0
 
+        self.months = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september',
+                       'october', 'november', 'december']
+
     def plotPie(self, datain):
         # print(self.pieData)
         self.pieData = {key: val for key, val in datain.items() if val != 0.0}
         if self.incomeText in self.pieData:
             self.pieData[self.incomeText] = self.savings
+        else:
+            self.pieData[self.incomeText] = 0.0
 
         self.pieData['Uspora'] = self.pieData.pop('Prijem')
         _fig, ax = plt.subplots(figsize=(10, 4), subplot_kw=dict(aspect="equal"))
@@ -89,27 +92,26 @@ class DataModel(object):
         inputData = self.preprocessDataForPie()
         figure = self.plotPie(inputData)
         figure.savefig(memfile)
-
         document = Document()
         document.add_heading(file[2].upper() + ' ' + file[1], 0)
 
         document.add_picture(memfile, width=Inches(7.75))
-
         document.add_paragraph('Income', style='Intense Quote')
-
+        indices = [i for i, x in enumerate(self.months) if x == str(file[2])]
+        if not indices:
+            indices.append(12)      # in case of error month is 13
         records = (
-            ('5/2020', inputData['Prijem'], self.calcCZK(inputData['Prijem']), 'Celkovy prijem'),
+            (str(indices[0] + 1) + '/2020', inputData['Prijem'],
+             self.calcCZK(inputData['Prijem']), 'Celkovy prijem'),
         )
         self.addTable(records, document)
-        print(inputData)
-
         document.add_paragraph('Expenses', style='Intense Quote')
 
         records = ()
         for key in inputData.keys():
             if self.incomeText not in key:
                 if inputData[key] != 0.0:
-                    record = ('5/2020', inputData[key], self.calcCZK(inputData[key]), key)
+                    record = (str(indices[0] + 1) + '/2020', inputData[key], self.calcCZK(inputData[key]), key)
                     records = records + (record,)
 
         self.addTable(records, document)
